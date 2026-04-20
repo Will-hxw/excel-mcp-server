@@ -238,30 +238,34 @@ def read_data_from_excel(
     sheet_name: str,
     start_cell: str = "A1",
     end_cell: Optional[str] = None,
-    preview_only: bool = False
+    preview_only: bool = False,
+    show_formula: bool = False
 ) -> str:
     """
     Read data from Excel worksheet with cell metadata including validation rules.
-    
+
     Args:
         filepath: Path to Excel file
         sheet_name: Name of worksheet
         start_cell: Starting cell (default A1)
         end_cell: Ending cell (optional, auto-expands if not provided)
         preview_only: Whether to return preview only
-    
-    Returns:  
+        show_formula: Whether to return the formula instead of the cell value (default False, returns value)
+
+    Returns:
     JSON string containing structured cell data with validation metadata.
     Each cell includes: address, value, row, column, and validation info (if any).
+    When show_formula is True, each cell also includes the formula if present.
     """
     try:
         full_path = get_excel_path(filepath)
         from excel_mcp.data import read_excel_range_with_metadata
         result = read_excel_range_with_metadata(
-            full_path, 
-            sheet_name, 
-            start_cell, 
-            end_cell
+            full_path,
+            sheet_name,
+            start_cell,
+            end_cell,
+            include_formula=show_formula
         )
         if not result or not result.get("cells"):
             return "No data found in specified range"
